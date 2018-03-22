@@ -104,10 +104,13 @@ def perception_step(Rover):
     # 2) Apply perspective transform
     warped = perspect_transform(Rover.img, source, destination)
     # 3) Apply color threshold to identify navigable terrain/obstacles/rock samples
-    obstacle_coords = color_thresh(warped, rgb_thresh=((0,0,0),(140, 160, 160)))
-    rock_sample_coords = color_thresh(warped, rgb_thresh=((90, 90, 0), (255,255,40)))
-    navigable_terrain_coords = color_thresh(warped, rgb_thresh=((180, 160, 150), (255, 255, 255)))
+    # obstacle_coords = color_thresh(warped, rgb_thresh=((0,0,0),(140, 160, 160)))
+    # rock_sample_coords = color_thresh(warped, rgb_thresh=((90, 90, 0), (255,255,40)))
+    # navigable_terrain_coords = color_thresh(warped, rgb_thresh=((180, 160, 150), (255, 255, 255)))
 
+    obstacle_coords = color_thresh(warped, rgb_thresh=((0,0,0),(130, 150, 150)))
+    rock_sample_coords = color_thresh(warped, rgb_thresh=((90, 90, 0), (255,255,40)))
+    navigable_terrain_coords = color_thresh(warped, rgb_thresh=((190, 170, 160), (255, 255, 255)))
 
     # 4) Update Rover.vision_image (this will be displayed on left side of screen)
     Rover.vision_image[:,:,0] = obstacle_coords
@@ -141,6 +144,7 @@ def perception_step(Rover):
     # 8) Convert rover-centric pixel positions to polar coordinates
     # Update Rover pixel distances and angles
     Rover.nav_dists, Rover.nav_angles = to_polar_coords(navigable_x_robo, navigable_y_robo)
+    Rover.rock_dists, Rover.rock_angles = to_polar_coords(rock_x_robo, rock_y_robo)
     
  
     
