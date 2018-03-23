@@ -151,6 +151,13 @@ def create_output_images(Rover):
       pil_img.save(buff, format="JPEG")
       encoded_string2 = base64.b64encode(buff.getvalue()).decode("utf-8")
 
+      #pil_img.save('/Users/tgehr/Learning/udacity_robotics/RoboND-Rover-Project/output_2' + str(Rover.image_idx), format="JPEG")
+      Rover.image_idx +=1
+
+      text_file = open('../output/output.csv', "a")
+      text_file.write(str(Rover.image_idx)+','+str(Rover.pos[0])+','+str(Rover.pos[0])+','+str(Rover.yaw)+',\n')
+      text_file.close()
+
       return encoded_string1, encoded_string2
 
 

@@ -39,7 +39,7 @@ ground_truth_3d = np.dstack((ground_truth*0, ground_truth*255, ground_truth*0)).
 class RoverState():
     def __init__(self):
         self.start_time = None # To record the start time of navigation
-        self.total_time = None # To record total duration of naviagation
+        self.total_time = None # To record total duration of navigation
         self.img = None # Current camera image
         self.pos = None # Current position (x, y)
         self.yaw = None # Current yaw angle
@@ -55,14 +55,19 @@ class RoverState():
         ##### Added #####
         self.rock_angles = None
         self.rock_dists = None
-        self.stop_rock = 3
-        self.pickup_dist = 1
+        self.slow_rock = 60
+        self.pickup_dist = 15
+        self.pickup_slowdown_vel = 0.8
+        self.stuck_vel = 0.1
+        self.stuck_count = 0
+        self.reverse_count = 0
+        self.image_idx = 0
         #################
 
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode (can be forward or stop)
         self.throttle_set = 0.2 # Throttle setting when accelerating
-        self.brake_set = 10 # Brake setting when braking
+        self.brake_set = 20 # Brake setting when braking
         # The stop_forward and go_forward fields below represent total count
         # of navigable terrain pixels.  This is a very crude form of knowing
         # when you can keep going and when you should stop.  Feel free to
@@ -191,6 +196,10 @@ def send_pickup():
         skip_sid=True)
     eventlet.sleep(0)
 if __name__ == '__main__':
+    text_file = open('../output/output.csv', "w")
+    text_file.write('path, X_Position, Y_Position, Yaw,\n')
+    text_file.close()
+
     parser = argparse.ArgumentParser(description='Remote Driving')
     parser.add_argument(
         'image_folder',
